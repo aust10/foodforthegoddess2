@@ -1,0 +1,119 @@
+{% load static %}
+{% comment %} {% extends 'recipe.html'%}
+
+{% block content %} {% endcomment %}
+    <head>
+        <title>Home Page</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+    {% csrf_token %}
+        <div id="app">
+        <header>
+            {% comment %} <h1 id="title">food4thegoddess</h1> {% endcomment %}
+        </header>
+            <div id="searchSection">
+                <h1 id="title">food4thegoddess</h1>
+                <img id="logo" src="/static/images/FFTG_logo.png">
+                <search id="searchBtn"></search>
+                <button id="navbtn">About</button>
+                <button id="navbtn">Recipes</button>
+                <technique id="techniqueBtn"></technique>
+            </div>
+            <image id="mainImg" src="/static/images/sample.jpg">
+            <div id="randomSuggestion">
+            </div>
+        </script>
+        <div id="app"> 
+        <carousel></carousel>
+        </div>
+
+        <carousel></carousel>
+            
+        </div>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/vue"></script>
+    </body>
+{% comment %} {% endblock content %} {% endcomment %}
+<script>
+    Vue.component('search',{
+    data: function(){
+        return {
+            category:'',
+            info:[]
+            }
+        },
+        template: `
+        <form>
+            <select id="categorySel" v-model="category">
+                <option value="" seclected disabled>Please Choose One...</option>
+                <option value="appetizers">Appetizers</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="asian">Asian Dishes</option>
+                <option value="everydayDelights">Everyday Delights</option>
+                <option value="justForTwo">Just the Two of You</option>
+                <option value="meatDishes">Meat Dishes</option>
+                <option value="seafood">Seafood</option>
+                <option value="salads">Salads and Dressings</option>
+                <option value="soups">Soups</option>
+                <option value="vegSides">Veggies and Side Dishes</option>
+                <option value="sweets">Sweets</option>
+            </select><br>
+            {% comment %} <button class="find" @click.prevent="findActivity">Find</button> {% endcomment %}
+        </form>
+        `,
+        methods: {
+            findActivity: function(){
+                axios({
+                    method: "get",
+                    url: "/api/v1/recipes/",
+                })
+                .then(response => {(this.info = response.data);
+            })
+        }
+    }
+});
+    Vue.component('technique',{
+    data: function(){
+        return {
+            technique:'',
+            info:[]
+            }
+        },
+        template: `
+        <form>
+            <input id="inputBox" type="text" placeholder="Search....">
+            <button class="find" @click.prevent="findFood">Find</button>
+        </form>
+        `,
+        methods: {
+            findFood: function(){
+                axios({
+                    method: "get",
+                    url: "/api/v1/recipes/",
+                })
+                .then(response => {(this.info = response.data);
+            })
+        }
+    }
+});
+  
+let vm = new Vue ({
+    el:'#app',
+    data: function() {
+        return {
+            csrf_token:"",
+            recipes: [],
+            }
+    },
+    mounted: function() {
+            console.log("It loaded again!");
+        }
+});
+
+
+</script>

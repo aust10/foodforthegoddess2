@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+{% csrf_token %}
+    <div id="app">
+        {% comment %} <p><a href="{% url 'recipe_app:home' %}">home</a></p> {% endcomment %}
+        <div id="container">
+            <ul >
+                <h1>Recipe's</h1>
+                
+                <li v-for="recipe in recipes":key="recipes.id">[[ recipe.recipe_name ]]:</li><br>
+                <li v-for="recipe in recipes":key="recipes.keyword_info">[[ recipe.keyword_info]]</li><br>
+                <li v-for="recipe in recipes">[[ recipe.ingredient_info ]]</li><br>
+                <li v-for="recipe in recipes">[[recipe.body]]</li>
+            </ul>
+        </div>
+    </div>
+    {% block content %}
+    {% endblock content %}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+</body>
+</html>
+<script>
+    let app = new Vue({
+        el: '#app',
+        delimiters: ['[[', ']]'],
+        data: {
+            csrf_token:"",
+            recipes: [],
+        },
+        methods: {
+            getRecipes() {
+                axios({
+                    method: "get",
+                    url:"/api/v1/recipes/"
+                }).then(response => this.recipes = response.data);
+            },
+        },
+        mounted: function() {
+            this.csrf_token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
+            this.getRecipes();
+            console.log("this loaded")
+        }
+    })
+
+
+</script>
+
